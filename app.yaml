@@ -12,7 +12,7 @@ spec:
   project: default
   source:
     path: argocd
-    repoURL: https://git.deimos.co.za/mensaah/gitOps.git
+    repoURL: https://github.com/mensaah/gitops-demo.git
     targetRevision: HEAD
   syncPolicy:
     automated: {}
