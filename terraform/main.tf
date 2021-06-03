@@ -35,10 +35,9 @@ module "eks" {
 
   worker_groups = [
     {
-      instance_type        = "t3.small"
-      asg_desired_capacity = "1"
-      asg_max_size         = "2"
-      asg_min_size         = "1"
+      instance_type = "t3.small"
+      asg_max_size  = "3"
+      asg_min_size  = "2"
     }
   ]
   workers_group_defaults = {
@@ -62,4 +61,41 @@ module "argocd" {
   version      = "1.0.0"
   repositories = local.argocd_repositories
   depends_on   = [module.eks]
+}
+
+
+resource "kubernetes_manifest" "argocd-app" {
+  provider = kubernetes-alpha
+
+  manifest = {
+    apiVersion = "argoproj.io/v1alpha1"
+    kind       = "Application"
+    metadata = {
+      name      = "argocd-applications"
+      namespace = "argocd"
+    }
+    spec = {
+      project = "default"
+      source = {
+        repoURL        = "https://github.com/MeNsaaH/gitops-demo.git"
+        targetRevision = "HEAD"
+        path           = "k8s-manifest/argocd"
+        directory = {
+          recurse = "true"
+        }
+      }
+      destination = {
+        server    = "https://kubernetes.default.svc"
+        namespace = "argocd"
+      }
+      syncPolicy = {
+        automated = {
+          prune    = "false"
+          selfHeal = "false"
+        }
+      }
+    }
+  }
+
+  depends_on = [module.argocd]
 }
