@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://charts.jetstack.io
+    chart: cert-manager
+    targetRevision: 1.2.0
+    helm:
+      parameters:
+      values: |
+        extraArgs:
+          - --dns01-recursive-nameservers-only
+          - --dns01-recursive-nameservers=8.8.8.8:53,10.252.224.10:53
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+     - CreateNamespace=true

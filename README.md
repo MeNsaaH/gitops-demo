@@ -1,3 +1,3 @@
 # gitOps
 
-ArgoCD Deployment files for terraform 
+An simple Gitops Demo using terraform to bootstrap Argocd
