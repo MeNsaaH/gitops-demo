@@ -10,7 +10,7 @@ spec:
     chart: cert-manager
     targetRevision: 1.2.0
     helm:
-      parameters:
+#      parameters:
       values: |
         installCRDs: true
         extraArgs:
